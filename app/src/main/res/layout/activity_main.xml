@@ -19,6 +19,6 @@
         android:padding="8dp"
         android:text="Log in with Spotify"
         android:textAllCaps="false"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/black" />
 
 </RelativeLayout>
