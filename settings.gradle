@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='SpotifySignInExample'
+rootProject.name='PlayCreate'

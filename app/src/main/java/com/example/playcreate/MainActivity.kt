@@ -1,4 +1,4 @@
-package com.example.spotifysigninexample
+package com.example.playcreate
 
 import android.content.Intent
 import android.os.Bundle
