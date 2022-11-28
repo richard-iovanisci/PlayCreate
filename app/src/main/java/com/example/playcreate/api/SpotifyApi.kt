@@ -1,7 +1,6 @@
 package com.example.playcreate.api
 
 import android.text.SpannableString
-/* -- need these packages
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -13,7 +12,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
-*/
 import java.lang.reflect.Type
 
 

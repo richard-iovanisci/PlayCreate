@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SpotifySong (
 
-    @SerializedName("name")
+    @SerializedName("foo")
     val key: String
 
 ) {
