@@ -3,7 +3,9 @@ package com.example.playcreate
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playcreate.ui.MainViewModel
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
@@ -20,11 +22,7 @@ import javax.net.ssl.HttpsURLConnection
 class MainActivity : AppCompatActivity() {
 
     // TODO -- move to ViewModel, start refactoring the layout and files.
-    var id = ""
-    var displayName = ""
-    var email = ""
-    var avatar = ""
-    var accessToken = ""
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,17 +81,14 @@ class MainActivity : AppCompatActivity() {
                 // Spotify Id
                 val spotifyId = jsonObject.getString("id")
                 Log.d("Spotify Id :", spotifyId)
-                id = spotifyId
 
                 // Spotify Display Name
                 val spotifyDisplayName = jsonObject.getString("display_name")
                 Log.d("Spotify Display Name :", spotifyDisplayName)
-                displayName = spotifyDisplayName
 
                 // Spotify Email
                 val spotifyEmail = jsonObject.getString("email")
                 Log.d("Spotify Email :", spotifyEmail)
-                email = spotifyEmail
 
 
                 val spotifyAvatarArray = jsonObject.getJSONArray("images")
@@ -102,11 +97,11 @@ class MainActivity : AppCompatActivity() {
                 if (spotifyAvatarArray.length() > 0) {
                     spotifyAvatarURL = spotifyAvatarArray.getJSONObject(0).getString("url")
                     Log.d("Spotify Avatar : ", spotifyAvatarURL)
-                    avatar = spotifyAvatarURL
                 }
 
                 Log.d("Spotify AccessToken :", token)
-                accessToken = token
+
+                viewModel.setUserCreds(spotifyId, spotifyDisplayName, spotifyEmail, spotifyAvatarURL, token)
 
                 openDetailsActivity()
             }
@@ -117,11 +112,6 @@ class MainActivity : AppCompatActivity() {
     // TODO -- potentially refactor to ViewModel/Fragment pattern instead of opening a new activity -- or leave this as a sanity check and implement said pattern
     private fun openDetailsActivity() {
         val myIntent = Intent(this@MainActivity, DetailsActivity::class.java)
-        myIntent.putExtra("spotify_id", id)
-        myIntent.putExtra("spotify_display_name", displayName)
-        myIntent.putExtra("spotify_email", email)
-        myIntent.putExtra("spotify_avatar", avatar)
-        myIntent.putExtra("spotify_access_token", accessToken)
         startActivity(myIntent)
     }
 }
