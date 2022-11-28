@@ -19,6 +19,7 @@ import javax.net.ssl.HttpsURLConnection
 
 class MainActivity : AppCompatActivity() {
 
+    // TODO -- move to ViewModel, start refactoring the layout and files.
     var id = ""
     var displayName = ""
     var email = ""
@@ -112,6 +113,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    // TODO -- potentially refactor to ViewModel/Fragment pattern instead of opening a new activity
     private fun openDetailsActivity() {
         val myIntent = Intent(this@MainActivity, DetailsActivity::class.java)
         myIntent.putExtra("spotify_id", id)
