@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    // TODO -- potentially refactor to ViewModel/Fragment pattern instead of opening a new activity
+    // TODO -- potentially refactor to ViewModel/Fragment pattern instead of opening a new activity -- or leave this as a sanity check and implement said pattern
     private fun openDetailsActivity() {
         val myIntent = Intent(this@MainActivity, DetailsActivity::class.java)
         myIntent.putExtra("spotify_id", id)
