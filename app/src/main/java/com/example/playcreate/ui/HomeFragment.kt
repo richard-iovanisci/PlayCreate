@@ -49,7 +49,7 @@ class HomeFragment: Fragment() {
         viewModel.observeId().observe(
             viewLifecycleOwner,
             Observer {
-                binding.testText.text = it
+                binding.testText.text = "Authenticated as: $it"
             }
         )
 

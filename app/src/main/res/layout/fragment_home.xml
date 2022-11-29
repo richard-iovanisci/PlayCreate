@@ -16,7 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/testText"
-            android:text="foo">
+            android:text="foo"
+            android:gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:textSize="12dp">
         </TextView>
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
