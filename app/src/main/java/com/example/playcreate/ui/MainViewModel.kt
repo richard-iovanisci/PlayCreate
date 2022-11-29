@@ -28,7 +28,7 @@ class MainViewModel : ViewModel() {
         accessToken.postValue(at)
     }
 
-    fun getId(): LiveData<String>{
+    fun observeId(): LiveData<String>{
         return id
     }
     fun getDisplayName(): LiveData<String>{

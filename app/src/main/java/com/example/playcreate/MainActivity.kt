@@ -5,6 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
+import com.example.playcreate.databinding.ActivityMainBinding
+import com.example.playcreate.ui.HomeFragment
 import com.example.playcreate.ui.MainViewModel
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
@@ -22,11 +26,26 @@ import javax.net.ssl.HttpsURLConnection
 class MainActivity : AppCompatActivity() {
 
     // TODO -- move to ViewModel, start refactoring the layout and files.
+
+    companion object {
+
+        var globalDebug = false
+        //lateinit var jsonAww100: String
+        //lateinit var subreddit1: String
+        private const val mainFragTag = "mainFragTag"
+        //private const val favoritesFragTag = "favoritesFragTag"
+        //private const val subredditsFragTag = "subredditsFragTag"
+
+        // activity management
+        const val callingActivityKey = "callingActivity"
+    }
+
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(activityMainBinding.root)
 
         spotify_login_btn.setOnClickListener {
             val request = getAuthenticationRequest(AuthenticationResponse.Type.TOKEN)
@@ -103,11 +122,21 @@ class MainActivity : AppCompatActivity() {
 
                 viewModel.setUserCreds(spotifyId, spotifyDisplayName, spotifyEmail, spotifyAvatarURL, token)
 
-                openDetailsActivity()
+                //openDetailsActivity()
+                addHomeFragment()
             }
         }
     }
 
+
+    private fun addHomeFragment() {
+        // No back stack for home
+        supportFragmentManager.commit {
+            add(R.id.main_frame, HomeFragment.newInstance(), mainFragTag)
+            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        }
+    }
 
     // TODO -- potentially refactor to ViewModel/Fragment pattern instead of opening a new activity -- or leave this as a sanity check and implement said pattern
     private fun openDetailsActivity() {
