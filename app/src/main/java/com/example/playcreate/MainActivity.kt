@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getAuthenticationRequest(type: AuthenticationResponse.Type): AuthenticationRequest {
         return AuthenticationRequest.Builder(SpotifyConstants.CLIENT_ID, type, SpotifyConstants.REDIRECT_URI)
-            .setShowDialog(false)
+            .setShowDialog(true)
             .setScopes(arrayOf("user-read-email"))
             .build()
     }
