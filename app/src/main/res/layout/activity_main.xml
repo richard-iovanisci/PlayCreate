@@ -8,6 +8,8 @@ android:layout_height="match_parent"
 app:layout_behavior="@string/appbar_scrolling_view_behavior"
 tools:showIn="@layout/activity_main">
 
+    <!--logo from button idea from https://johncodeos.com/how-to-add-sign-in-with-spotify-button-to-your-android-app-using-kotlin-->
+
     <Button
         android:id="@+id/spotify_login_btn"
         android:layout_width="wrap_content"

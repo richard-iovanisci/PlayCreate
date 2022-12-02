@@ -26,16 +26,13 @@ import javax.net.ssl.HttpsURLConnection
 
 class MainActivity : AppCompatActivity() {
 
-    // TODO -- move to ViewModel, start refactoring the layout and files.
+    // authentication taken from https://johncodeos.com/how-to-add-sign-in-with-spotify-button-to-your-android-app-using-kotlin and reworked to fit my needs
+    // same goes for SpotifyConstants.kt (where some app credentials are stored)
 
     companion object {
 
         var globalDebug = false
-        //lateinit var jsonAww100: String
-        //lateinit var subreddit1: String
         private const val mainFragTag = "mainFragTag"
-        //private const val favoritesFragTag = "favoritesFragTag"
-        //private const val subredditsFragTag = "subredditsFragTag"
 
         // activity management
         const val callingActivityKey = "callingActivity"
