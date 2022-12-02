@@ -157,7 +157,7 @@ class HomeFragment: Fragment() {
         }
 
         // observers
-        viewModel.observeId().observe(
+        viewModel.observeEmail().observe(
             viewLifecycleOwner,
             Observer {
                 binding.testText.text = "Authenticated as: $it"

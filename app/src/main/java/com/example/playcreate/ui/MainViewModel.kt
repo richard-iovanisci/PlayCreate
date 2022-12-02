@@ -48,8 +48,8 @@ class MainViewModel : ViewModel() {
 
 
     // observe
-    fun observeId(): LiveData<String>{
-        return id
+    fun observeEmail(): LiveData<String>{
+        return email
     }
     fun observeArtName(): LiveData<String>{
         return artName
