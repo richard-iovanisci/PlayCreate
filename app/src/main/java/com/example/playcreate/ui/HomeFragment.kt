@@ -82,6 +82,11 @@ class HomeFragment: Fragment() {
                 hideKeyboard()
                 return@setOnClickListener
             }
+            if(viewModel.getArtId().value?.isEmpty() == true){
+                Toast.makeText(this.context, "No Valid Artist Id Found", Toast.LENGTH_SHORT).show()
+                hideKeyboard()
+                return@setOnClickListener
+            }
             Log.d("Token for search artist", "${viewModel.getAccessToken().value}")
             Log.d("Term for search artist", "${binding.artistET.text.toString()}")
 
@@ -193,6 +198,7 @@ class HomeFragment: Fragment() {
 
         val spotifySearchUrl = "https://api.spotify.com/v1/search?q=$term&type=artist&market=US&limit=1"
 
+
         GlobalScope.launch(Dispatchers.Default) {
             val url = URL(spotifySearchUrl)
             val httpsURLConnection = withContext(Dispatchers.IO) {url.openConnection() as HttpsURLConnection }
@@ -213,6 +219,12 @@ class HomeFragment: Fragment() {
                 val regex2 = Regex("\"name\" : \"(.*)\"")
                 val resultList2 = regex2.findAll(response).map { it.groups.get(1)!!.value }.toList()
 
+                if (resultList1.isEmpty()){
+                    Log.d("error during search", "no artist returned (list empty)")
+                    Toast.makeText(context, "Search Term Returned Nothing", Toast.LENGTH_SHORT).show()
+                    binding.artistET.text.clear()
+                    return@withContext
+                }
                 val artId = resultList1[0]
                 val artName = resultList2[0]
 
