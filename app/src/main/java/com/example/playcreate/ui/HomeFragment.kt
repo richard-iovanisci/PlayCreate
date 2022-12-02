@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -35,6 +36,7 @@ class HomeFragment: Fragment() {
     private var _binding: FragmentHomeBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var seekBar: SeekBar
 
 
     companion object {
@@ -74,6 +76,24 @@ class HomeFragment: Fragment() {
             // hide keys
             hideKeyboard()
         }
+
+        //seekbar
+        seekBar = binding.numSongsSeek
+        /*
+        Stack Overflow for Structure
+        */
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                Log.d("currentSeek", "$progress")
+                viewModel.setNumSongs(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+            }
+        })
 
         // on click listeners
         binding.submitBut.setOnClickListener{
@@ -120,7 +140,12 @@ class HomeFragment: Fragment() {
             viewLifecycleOwner,
             Observer {
                 Glide.glideFetch(it, binding.artistImage)
-
+            }
+        )
+        viewModel.observeNumSongs().observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.submitBut.text = "Create $it-Song Playlist"
             }
         )
 
@@ -187,7 +212,7 @@ class HomeFragment: Fragment() {
             return
         }
 
-        val spotifySubmitUrl = "https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_artists=$artist&seed_genres=$genre"
+        val spotifySubmitUrl = "https://api.spotify.com/v1/recommendations?limit=${viewModel.getNumSongs().value}&market=US&seed_artists=$artist&seed_genres=$genre"
 
         GlobalScope.launch(Dispatchers.Default) {
             val url = URL(spotifySubmitUrl)
@@ -228,7 +253,7 @@ class HomeFragment: Fragment() {
         // Create JSON using JSONObject
         val jsonObject = JSONObject()
         jsonObject.put("name", "$title")
-        jsonObject.put("description", "Created vie PlayCreate")
+        jsonObject.put("description", "Created via PlayCreate")
         jsonObject.put("public", false)
 
         // Convert JSONObject to String

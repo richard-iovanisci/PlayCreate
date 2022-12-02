@@ -22,6 +22,7 @@ class MainViewModel : ViewModel() {
     private var artId = MutableLiveData<String>()
     private var imgUrl = MutableLiveData<String>()
     private var seedG = MutableLiveData<String>()
+    private var numSongs = MutableLiveData<Int>()
 
 
     // set
@@ -39,6 +40,9 @@ class MainViewModel : ViewModel() {
         imgUrl.postValue(img)
         seedG.postValue(g)
     }
+    fun setNumSongs(i: Int){
+        numSongs.postValue(i)
+    }
 
 
     // observe
@@ -50,6 +54,9 @@ class MainViewModel : ViewModel() {
     }
     fun observeImgUrl(): LiveData<String>{
         return imgUrl
+    }
+    fun observeNumSongs(): LiveData<Int>{
+        return numSongs
     }
 
     // get
@@ -64,5 +71,8 @@ class MainViewModel : ViewModel() {
     }
     fun getUserId(): LiveData<String>{
         return id
+    }
+    fun getNumSongs(): LiveData<Int>{
+        return numSongs
     }
 }
