@@ -62,4 +62,7 @@ class MainViewModel : ViewModel() {
     fun getGenre(): LiveData<String>{
         return seedG
     }
+    fun getUserId(): LiveData<String>{
+        return id
+    }
 }
