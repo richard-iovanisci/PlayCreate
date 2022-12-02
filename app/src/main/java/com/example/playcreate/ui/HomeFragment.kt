@@ -76,6 +76,12 @@ class HomeFragment: Fragment() {
             hideKeyboard()
         }
 
+        // on click listeners
+        binding.submitBut.setOnClickListener{
+            Log.d("Token for submit", "${viewModel.getAccessToken().value}")
+            Log.d("artist seed", "${viewModel.getArtId().value}")
+        }
+
         // observers
         viewModel.observeId().observe(
             viewLifecycleOwner,

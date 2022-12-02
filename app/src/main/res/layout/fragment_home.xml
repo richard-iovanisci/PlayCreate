@@ -24,9 +24,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/artistET"
-                android:maxLines="1"
                 android:imeOptions="actionDone"
                 android:hint="Enter Artist Seed"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 />
             <Button
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/artPromptTV"
                 android:text="Artist Seed: "
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="14dp"
                 android:textSize="18sp"
                 android:layout_weight="1"
                 />
@@ -57,7 +57,7 @@
                 android:id="@+id/artNameTV"
                 android:text=""
                 android:textSize="18sp"
-                android:layout_weight="1"
+                android:layout_weight="1.35"
                 />
         </LinearLayout>
 
@@ -70,9 +70,30 @@
 
         </ImageView>
 
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            >
+            <Button
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/submitBut"
+                android:text="Submit Playlist"
+                android:layout_weight="1"
+                android:layout_margin="12dp"
                 />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/description"
+            android:text="Playlist will be generated using Spotify's Recommendations API. Using your Artist Seed, we'll perform some magic behind the scenes and leave the listening to you."
+            android:gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:textSize="12sp">
+        </TextView>
+
 </LinearLayout>

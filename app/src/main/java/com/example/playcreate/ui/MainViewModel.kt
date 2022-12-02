@@ -54,4 +54,7 @@ class MainViewModel : ViewModel() {
     fun getAccessToken(): LiveData<String>{
         return accessToken
     }
+    fun getArtId(): LiveData<String>{
+        return artId
+    }
 }
