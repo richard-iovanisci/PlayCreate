@@ -75,8 +75,8 @@
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:min="10"
-        android:max="100"
+        android:min="5"
+        android:max="50"
         android:id="@+id/numSongsSeek"
         android:layout_margin="10dp">
 

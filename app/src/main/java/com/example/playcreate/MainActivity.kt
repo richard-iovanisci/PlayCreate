@@ -140,10 +140,4 @@ class MainActivity : AppCompatActivity() {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }
     }
-
-    // perhaps reuse this if I need another activity
-    private fun openDetailsActivity() {
-        val myIntent = Intent(this@MainActivity, DetailsActivity::class.java)
-        startActivity(myIntent)
-    }
 }

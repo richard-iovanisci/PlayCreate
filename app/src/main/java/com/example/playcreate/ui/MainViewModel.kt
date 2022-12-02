@@ -4,9 +4,6 @@ package com.example.playcreate.ui
 import android.content.Context
 import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.lifecycle.*
-import com.example.playcreate.api.SpotifyApi
-import com.example.playcreate.api.SpotifySong
-import com.example.playcreate.api.SpotifySongRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -22,10 +19,15 @@ class MainViewModel : ViewModel() {
     private var artId = MutableLiveData<String>()
     private var imgUrl = MutableLiveData<String>()
     private var seedG = MutableLiveData<String>()
-    private var numSongs = MutableLiveData<Int>()
+    private var numSongs = MutableLiveData<Int>(5)
 
 
     // set
+    fun resetLiveData(){
+        artName.postValue("")
+        numSongs.postValue(5)
+        imgUrl.postValue("")
+    }
     fun setUserCreds(i: String, dn: String, e: String, av: String, at: String){
         id.postValue(i)
         println("DEBUG -- setting id LD to $i")

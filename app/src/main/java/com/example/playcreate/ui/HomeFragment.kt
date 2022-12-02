@@ -3,6 +3,7 @@ package com.example.playcreate.ui
 import android.app.Activity
 import android.content.Context
 import android.icu.text.CaseMap.Title
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -28,6 +31,7 @@ import org.json.JSONObject
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.util.Random
+import kotlin.math.max
 
 // XXX Write most of this file
 class HomeFragment: Fragment() {
@@ -55,10 +59,21 @@ class HomeFragment: Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentHomeBinding.bind(view)
         Log.d(javaClass.simpleName, "onViewCreated")
+
+        //in case reAuth
+        // empty fields
+        binding.artistET.text.clear()
+        binding.playlistET.text.clear()
+        binding.artNameTV.text = ""
+        // remove image
+        binding.artistImage.setImageDrawable(null)
+        //stage viewModel
+        viewModel.resetLiveData()
 
         // on click listeners
         binding.searchBut.setOnClickListener{
@@ -103,6 +118,12 @@ class HomeFragment: Fragment() {
                 return@setOnClickListener
             }
 
+            if(binding.artistET.text.isEmpty()){
+                Toast.makeText(this.context, "Please Set the Artist Seed", Toast.LENGTH_SHORT).show()
+                hideKeyboard()
+                return@setOnClickListener
+            }
+
             Log.d("Token for submit", "${viewModel.getAccessToken().value}")
             Log.d("artist seed", "${viewModel.getArtId().value}")
             Log.d("genre seeds", "${viewModel.getGenre().value}")
@@ -121,6 +142,18 @@ class HomeFragment: Fragment() {
 
             //hide keyboard
             hideKeyboard()
+        }
+
+        //edit text listeners
+        binding.artistET.addTextChangedListener {
+            if(it!!.isEmpty()){
+                hideKeyboard()
+            }
+        }
+        binding.playlistET.addTextChangedListener {
+            if(it!!.isEmpty()){
+                hideKeyboard()
+            }
         }
 
         // observers
@@ -205,6 +238,7 @@ class HomeFragment: Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchRecommendations(token: String?, artist: String, genre: String, playTitle: String) {
         Log.d("Status: ", "Please Wait...")
         if (token == null) {
@@ -216,6 +250,7 @@ class HomeFragment: Fragment() {
 
         GlobalScope.launch(Dispatchers.Default) {
             val url = URL(spotifySubmitUrl)
+            Log.d("url to GET:", "$url")
             val httpsURLConnection = withContext(Dispatchers.IO) {url.openConnection() as HttpsURLConnection }
             httpsURLConnection.requestMethod = "GET"
             httpsURLConnection.addRequestProperty("Authorization", "Bearer $token")
@@ -243,6 +278,7 @@ class HomeFragment: Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createPlaylist(token: String?, title: String, songs: List<String>) {
         Log.d("Status: ", "Please Wait...")
         if (token == null) {
@@ -300,6 +336,7 @@ class HomeFragment: Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun addSongsToPlaylist(token: String?, playlist: String, songs: List<String>) {
         Log.d("Status: ", "Please Wait...")
         if (token == null) {
@@ -334,6 +371,9 @@ class HomeFragment: Fragment() {
 
                     Log.d("Response :", response)
 
+                    // call cleanup
+                    cleanupOnSuccess()
+
                 }
             } else {
                 Log.e("CONNECTION_ERROR", responseCode.toString())
@@ -353,5 +393,24 @@ class HomeFragment: Fragment() {
         val inputMethodManager =
             getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun cleanupOnSuccess(){
+
+        // empty fields
+        binding.artistET.text.clear()
+        binding.playlistET.text.clear()
+        binding.artNameTV.text = ""
+        //stage viewModel
+        viewModel.resetLiveData()
+
+        //seekbar to 10
+        seekBar.progress = seekBar.min
+
+        // hide keyboard
+        hideKeyboard()
+
+        Toast.makeText(this.context, "Playlist Posted to Spotify!", Toast.LENGTH_SHORT).show()
     }
 }
