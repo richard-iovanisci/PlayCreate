@@ -21,6 +21,7 @@ class MainViewModel : ViewModel() {
     private var artName = MutableLiveData<String>()
     private var artId = MutableLiveData<String>()
     private var imgUrl = MutableLiveData<String>()
+    private var seedG = MutableLiveData<String>()
 
 
     // set
@@ -32,10 +33,11 @@ class MainViewModel : ViewModel() {
         avatar.postValue(av)
         accessToken.postValue(at)
     }
-    fun setArtCreds(i: String, n: String, img: String){
+    fun setArtCreds(i: String, n: String, img: String, g: String){
         artId.postValue(i)
         artName.postValue(n)
         imgUrl.postValue(img)
+        seedG.postValue(g)
     }
 
 
@@ -56,5 +58,8 @@ class MainViewModel : ViewModel() {
     }
     fun getArtId(): LiveData<String>{
         return artId
+    }
+    fun getGenre(): LiveData<String>{
+        return seedG
     }
 }

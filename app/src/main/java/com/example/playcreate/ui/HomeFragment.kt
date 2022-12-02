@@ -8,31 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.playcreate.MainActivity
 import com.example.playcreate.databinding.FragmentHomeBinding
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlin.reflect.typeOf
 import com.example.playcreate.glide.Glide
+import java.util.Random
 
 // XXX Write most of this file
 class HomeFragment: Fragment() {
@@ -66,6 +54,11 @@ class HomeFragment: Fragment() {
 
         // on click listeners
         binding.searchBut.setOnClickListener{
+            if(binding.artistET.text.isEmpty()){
+                Toast.makeText(this.context, "Please Search for an Artist", Toast.LENGTH_SHORT).show()
+                hideKeyboard()
+                return@setOnClickListener
+            }
             Log.d("Token for search artist", "${viewModel.getAccessToken().value}")
             Log.d("Term for search artist", "${binding.artistET.text.toString()}")
 
@@ -78,8 +71,30 @@ class HomeFragment: Fragment() {
 
         // on click listeners
         binding.submitBut.setOnClickListener{
+            if(binding.playlistET.text.isEmpty()){
+                Toast.makeText(this.context, "Please Enter a Playlist Name", Toast.LENGTH_SHORT).show()
+                hideKeyboard()
+                return@setOnClickListener
+            }
+
             Log.d("Token for submit", "${viewModel.getAccessToken().value}")
             Log.d("artist seed", "${viewModel.getArtId().value}")
+            Log.d("genre seeds", "${viewModel.getGenre().value}")
+
+            // parse and pick genre at random from artist's list
+            var genreString = viewModel.getGenre().value!!.replace("\"", "")
+            var list = genreString.split(", ")
+            val indexSelection = (list.indices).random()
+            val genreSeed = list[indexSelection].replace(" ", "%20")
+            Log.d("selected genre", genreSeed)
+            val token = viewModel.getAccessToken().value
+            val artistSeed = viewModel.getArtId().value
+
+            // fetch
+            fetchRecommendations(token, artistSeed!!, genreSeed)
+
+            //hide keyboard
+            hideKeyboard()
         }
 
         // observers
@@ -145,7 +160,51 @@ class HomeFragment: Fragment() {
 
                 Log.d("image url", "$artName: $imgUrl")
 
-                viewModel.setArtCreds(artId, artName, imgUrl)
+                // genre
+                val regex4 = Regex("\"genres\" : \\[ (.*) \\]")
+                val resultList4 = regex4.findAll(response).map { it.groups.get(1)!!.value }.toList()
+
+                val seedGenre = resultList4[0]
+
+                Log.d("image url", "$artName: $imgUrl")
+
+
+                viewModel.setArtCreds(artId, artName, imgUrl, seedGenre)
+            }
+        }
+    }
+
+    private fun fetchRecommendations(token: String?, artist: String, genre: String) {
+        Log.d("Status: ", "Please Wait...")
+        if (token == null) {
+            Log.i("Status: ", "Something went wrong - No Access Token found")
+            return
+        }
+
+        val spotifySubmitUrl = "https://api.spotify.com/v1/recommendations?limit=100&market=US&seed_artists=$artist&seed_genres=$genre"
+
+        GlobalScope.launch(Dispatchers.Default) {
+            val url = URL(spotifySubmitUrl)
+            val httpsURLConnection = withContext(Dispatchers.IO) {url.openConnection() as HttpsURLConnection }
+            httpsURLConnection.requestMethod = "GET"
+            httpsURLConnection.addRequestProperty("Authorization", "Bearer $token")
+            httpsURLConnection.doInput = true
+            httpsURLConnection.doOutput = false
+            val response = httpsURLConnection.inputStream.bufferedReader()
+                .use { it.readText() }  // defaults to UTF-8
+            withContext(Dispatchers.Main) {
+
+                Log.d("response", ("${response}"))
+
+                // grab track ids
+                val regex1 = Regex("\"id\" : \"(.*)\",\\n.*\"is_local\" : false,")
+                val resultList1 = regex1.findAll(response).map { it.groups.get(1)!!.value }.toList()
+
+                Log.d("test track(s)", "${resultList1.size}")
+                for(track in resultList1){
+                    Log.d("track:", "$track")
+                }
+
             }
         }
     }
