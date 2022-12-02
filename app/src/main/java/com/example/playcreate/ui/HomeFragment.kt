@@ -1,17 +1,38 @@
 package com.example.playcreate.ui
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.playcreate.MainActivity
 import com.example.playcreate.databinding.FragmentHomeBinding
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlin.reflect.typeOf
+import com.example.playcreate.glide.Glide
 
 // XXX Write most of this file
 class HomeFragment: Fragment() {
@@ -44,6 +65,16 @@ class HomeFragment: Fragment() {
         Log.d(javaClass.simpleName, "onViewCreated")
 
         // on click listeners
+        binding.searchBut.setOnClickListener{
+            Log.d("Token for search artist", "${viewModel.getAccessToken().value}")
+            Log.d("Term for search artist", "${binding.artistET.text.toString()}")
+
+            //make request
+            fetchArtistId(viewModel.getAccessToken().value, binding.artistET.text.toString())
+
+            // hide keys
+            hideKeyboard()
+        }
 
         // observers
         viewModel.observeId().observe(
@@ -52,6 +83,78 @@ class HomeFragment: Fragment() {
                 binding.testText.text = "Authenticated as: $it"
             }
         )
+        viewModel.observeArtName().observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.artNameTV.text = it
+            }
+        )
+        viewModel.observeImgUrl().observe(
+            viewLifecycleOwner,
+            Observer {
+                Glide.glideFetch(it, binding.artistImage)
 
+            }
+        )
+
+    }
+
+    private fun fetchArtistId(token: String?, term: String) {
+        Log.d("Status: ", "Please Wait...")
+        if (token == null) {
+            Log.i("Status: ", "Something went wrong - No Access Token found")
+            return
+        }
+
+        val spotifySearchUrl = "https://api.spotify.com/v1/search?q=$term&type=artist&market=US&limit=1"
+
+        GlobalScope.launch(Dispatchers.Default) {
+            val url = URL(spotifySearchUrl)
+            val httpsURLConnection = withContext(Dispatchers.IO) {url.openConnection() as HttpsURLConnection }
+            httpsURLConnection.requestMethod = "GET"
+            httpsURLConnection.addRequestProperty("Authorization", "Bearer $token")
+            httpsURLConnection.doInput = true
+            httpsURLConnection.doOutput = false
+            val response = httpsURLConnection.inputStream.bufferedReader()
+                .use { it.readText() }  // defaults to UTF-8
+            withContext(Dispatchers.Main) {
+
+                Log.d("response", ("${response}"))
+
+                // grab artist strings
+                val regex1 = Regex("\"id\" : \"(.*)\"")
+                val resultList1 = regex1.findAll(response).map { it.groups.get(1)!!.value }.toList()
+
+                val regex2 = Regex("\"name\" : \"(.*)\"")
+                val resultList2 = regex2.findAll(response).map { it.groups.get(1)!!.value }.toList()
+
+                val artId = resultList1[0]
+                val artName = resultList2[0]
+
+                // grab image url
+                val regex3 = Regex("\"url\" : \"(.*)\",")
+                val resultList3 = regex3.findAll(response).map { it.groups.get(1)!!.value }.toList()
+
+                val imgUrl = resultList3[0]
+
+                Log.d("image url", "$artName: $imgUrl")
+
+                viewModel.setArtCreds(artId, artName, imgUrl)
+            }
+        }
+    }
+
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+
+    fun Activity.hideKeyboard() {
+        hideKeyboard(currentFocus ?: View(this))
+    }
+
+    private fun Context.hideKeyboard(view: View) {
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

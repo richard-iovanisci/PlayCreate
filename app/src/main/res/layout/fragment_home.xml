@@ -37,10 +37,42 @@
                 android:layout_weight="1"
                 />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/artPromptTV"
+                android:text="Artist Seed: "
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/artNameTV"
+                android:text=""
+                android:textSize="18sp"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:layout_gravity="center"
+            android:id="@+id/artistImage"
+            android:layout_margin="10dp">
+
+        </ImageView>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />d
+                />
 </LinearLayout>

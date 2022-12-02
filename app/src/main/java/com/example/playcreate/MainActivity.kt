@@ -3,6 +3,7 @@ package com.example.playcreate
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -92,10 +93,12 @@ class MainActivity : AppCompatActivity() {
             httpsURLConnection.setRequestProperty("Authorization", "Bearer $token")
             httpsURLConnection.doInput = true
             httpsURLConnection.doOutput = false
+            Log.d("details request", "$httpsURLConnection")
             val response = httpsURLConnection.inputStream.bufferedReader()
                 .use { it.readText() }  // defaults to UTF-8
             withContext(Dispatchers.Main) {
                 val jsonObject = JSONObject(response)
+                Log.d("json", ("$jsonObject"))
 
                 // Spotify Id
                 val spotifyId = jsonObject.getString("id")

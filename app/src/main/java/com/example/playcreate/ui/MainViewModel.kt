@@ -18,7 +18,12 @@ class MainViewModel : ViewModel() {
     private var email = MutableLiveData<String>()
     private var avatar = MutableLiveData<String>()
     private var accessToken = MutableLiveData<String>()
+    private var artName = MutableLiveData<String>()
+    private var artId = MutableLiveData<String>()
+    private var imgUrl = MutableLiveData<String>()
 
+
+    // set
     fun setUserCreds(i: String, dn: String, e: String, av: String, at: String){
         id.postValue(i)
         println("DEBUG -- setting id LD to $i")
@@ -27,19 +32,25 @@ class MainViewModel : ViewModel() {
         avatar.postValue(av)
         accessToken.postValue(at)
     }
+    fun setArtCreds(i: String, n: String, img: String){
+        artId.postValue(i)
+        artName.postValue(n)
+        imgUrl.postValue(img)
+    }
 
+
+    // observe
     fun observeId(): LiveData<String>{
         return id
     }
-    fun getDisplayName(): LiveData<String>{
-        return displayName
+    fun observeArtName(): LiveData<String>{
+        return artName
     }
-    fun getEmail(): LiveData<String>{
-        return email
+    fun observeImgUrl(): LiveData<String>{
+        return imgUrl
     }
-    fun getAvatar(): LiveData<String>{
-        return avatar
-    }
+
+    // get
     fun getAccessToken(): LiveData<String>{
         return accessToken
     }
