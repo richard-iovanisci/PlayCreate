@@ -13,6 +13,9 @@ class DetailsActivity : AppCompatActivity() {
 
 
     private val viewModel: MainViewModel by viewModels()
+
+    //IF i need another frag rework this file
+
 /*
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

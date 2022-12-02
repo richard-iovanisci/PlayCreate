@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     private fun getAuthenticationRequest(type: AuthenticationResponse.Type): AuthenticationRequest {
         return AuthenticationRequest.Builder(SpotifyConstants.CLIENT_ID, type, SpotifyConstants.REDIRECT_URI)
             .setShowDialog(true)
-            .setScopes(arrayOf("user-read-email"))
+            .setScopes(arrayOf("user-read-email","playlist-read-private","playlist-modify-private"))
             .build()
     }
 
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // TODO -- potentially refactor to ViewModel/Fragment pattern instead of opening a new activity -- or leave this as a sanity check and implement said pattern
+    // perhaps reuse this if I need another activity
     private fun openDetailsActivity() {
         val myIntent = Intent(this@MainActivity, DetailsActivity::class.java)
         startActivity(myIntent)
