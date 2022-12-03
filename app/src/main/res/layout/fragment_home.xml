@@ -64,8 +64,8 @@
         </LinearLayout>
 
         <ImageView
-            android:layout_width="375dp"
-            android:layout_height="375dp"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
             android:layout_gravity="center"
             android:id="@+id/artistImage"
             android:layout_margin="10dp">
